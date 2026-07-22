@@ -2,264 +2,394 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Despiece de Bujía - Fundación NH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motor de 4 Tiempos - Interactivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-user-select: none;
-            user-select: none;
+        /* Animaciones suaves para las partes del motor */
+        .engine-part {
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        .bg-transition {
+            transition: background-color 0.8s ease-in-out;
         }
-        .app-container {
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            width: 100%;
-            max-width: 4800px;
-            width: 450px;
+        
+        /* Animación para la chispa de la bujía */
+        .spark-active {
+            animation: spark-flash 0.15s infinite alternate;
         }
-        h2 {
-            text-align: center;
-            color: #4da6ff;
-            margin: 0 0 5px 0;
-            font-size: 1.3rem;
-        }
-        .fundacion-tag {
-            text-align: center;
-            color: #888;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
+        @keyframes spark-flash {
+            0% { background-color: #fef08a; box-shadow: 0 0 10px #fef08a, 0 0 20px #ef4444; }
+            100% { background-color: #ffffff; box-shadow: 0 0 25px #fef08a, 0 0 45px #ef4444; }
         }
 
-        /* Contenedor relativo para posicionar los Hotspots */
-        .imagen-contenedor {
-            position: relative;
-            width: 100%;
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        svg {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* Estilos de los Hotspots (Puntos interactivos) */
-        .hotspot {
-            position: absolute;
-            width: 26px;
-            height: 26px;
-            background-color: #ff5252;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-            z-index: 10;
-        }
-
-        /* Animación de latido */
-        .hotspot::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 50%;
-            background-color: transparent;
-            border: 2px solid #ff5252;
-            animation: latido 1.6s infinite ease-out;
-        }
-
-        @keyframes latido {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(2.4); opacity: 0; }
-        }
-
-        /* Ventana Emergente (Modal) */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 100;
-        }
-        .modal-overlay.activo {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-box {
-            background-color: #2a2a2a;
-            width: 100%;
-            max-width: 380px;
-            border-radius: 12px;
-            padding: 20px;
-            position: relative;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-            border-top: 5px solid #4da6ff;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-        .modal-overlay.activo .modal-box {
-            transform: translateY(0);
-        }
-
-        .btn-cerrar {
-            position: absolute;
-            top: 12px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: #aaa;
-            font-size: 1.6rem;
-            cursor: pointer;
-        }
-        .modal-titulo {
-            color: #4da6ff;
-            margin-top: 0;
-            font-size: 1.15rem;
-            padding-right: 25px;
-        }
-        .modal-texto {
-            color: #ddd;
-            line-height: 1.5;
-            font-size: 0.95rem;
-            margin-bottom: 0;
-        }
-        .instruccion {
-            text-align: center;
-            color: #aaa;
-            font-size: 0.85rem;
-            margin-top: 15px;
+        /* Estilo para el fondo a cuadros (opcional, le da un toque técnico) */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+                              linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col bg-grid">
 
-    <div class="app-container">
-        <h2>Componentes de una Bujía</h2>
-        <div class="fundacion-tag">FUNDACIÓN NH</div>
+    <!-- Header -->
+    <header class="bg-slate-900 text-white py-6 shadow-lg z-10">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">Motor de Combustión Interna</h1>
+            <p class="text-slate-400 mt-2 font-medium">Simulador del Ciclo de 4 Tiempos (Ciclo Otto)</p>
+        </div>
+    </header>
 
-        <div class="imagen-contenedor">
+    <main class="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full flex flex-col lg:flex-row overflow-hidden border border-slate-200">
             
-            <svg viewBox="0 0 200 380">
-                <rect x="90" y="20" width="20" height="25" rx="4" fill="#b0bec5" stroke="#78909c" stroke-width="2"/>
-                <circle cx="100" cy="25" r="6" fill="#90a4ae"/>
+            <!-- SECCIÓN IZQUIERDA: VISUALIZADOR DEL MOTOR -->
+            <div class="lg:w-1/2 bg-slate-100 p-8 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-slate-200 relative">
                 
-                <rect x="80" y="45" width="40" height="115" rx="5" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="2"/>
-                <rect x="75" y="65" width="50" height="10" rx="3" fill="#e0e0e0"/>
-                <rect x="75" y="85" width="50" height="10" rx="3" fill="#e0e0e0"/>
-                <rect x="75" y="105" width="50" height="10" rx="3" fill="#e0e0e0"/>
+                <!-- Etiquetas Superiores (Aire/Escape) -->
+                <div class="w-full flex justify-between max-w-[320px] mb-4 px-2 text-sm font-bold uppercase tracking-wider">
+                    <div id="label-intake" class="flex flex-col items-center transition-colors duration-300 text-slate-400">
+                        <span>Aire + Combustible</span>
+                        <svg class="w-4 h-4 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    </div>
+                    <div id="label-exhaust" class="flex flex-col items-center transition-colors duration-300 text-slate-400">
+                        <svg class="w-4 h-4 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                        <span>Gases de Escape</span>
+                    </div>
+                </div>
+
+                <!-- El Bloque del Motor / Cilindro -->
+                <div class="relative w-56 h-80 border-x-[12px] border-b-[12px] border-slate-800 rounded-b-2xl bg-white mt-2 flex justify-center shadow-inner">
+                    
+                    <!-- Culata (Parte superior con válvulas y bujía) -->
+                    <div class="absolute -top-6 w-full flex justify-between px-4 z-20">
+                        
+                        <!-- Válvula de Admisión (Izquierda) -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-2.5 h-8 bg-slate-400"></div>
+                            <div id="valve-intake" class="w-10 h-3 bg-slate-700 rounded-full engine-part translate-y-0"></div>
+                        </div>
+                        
+                        <!-- Bujía (Centro) -->
+                        <div class="flex flex-col items-center mt-3">
+                            <div class="w-5 h-5 bg-gray-200 rounded-t-md border-2 border-slate-400"></div>
+                            <div class="w-2 h-4 bg-slate-300"></div>
+                            <!-- La punta que hace chispa -->
+                            <div id="spark-plug" class="w-3 h-3 bg-slate-800 rounded-full mt-1 transition-colors duration-200"></div>
+                        </div>
+
+                        <!-- Válvula de Escape (Derecha) -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-2.5 h-8 bg-slate-400"></div>
+                            <div id="valve-exhaust" class="w-10 h-3 bg-slate-700 rounded-full engine-part translate-y-0"></div>
+                        </div>
+                    </div>
+
+                    <!-- Indicador visual del estado de los gases dentro del cilindro -->
+                    <div id="cylinder-gas" class="absolute top-0 w-full h-full bg-transparent opacity-70 bg-transition z-0 rounded-b-lg"></div>
+
+                    <!-- Pistón -->
+                    <div id="piston" class="absolute bottom-0 w-[92%] h-24 bg-slate-500 rounded-t-lg border-t-[6px] border-slate-600 flex flex-col items-center engine-part z-10 shadow-md">
+                        <!-- Anillos del pistón -->
+                        <div class="w-full h-1 bg-slate-700 mt-2 opacity-50"></div>
+                        <div class="w-full h-1 bg-slate-700 mt-1 opacity-50"></div>
+                        
+                        <!-- Biela (representación simplificada) -->
+                        <div class="w-8 h-40 bg-slate-300 mt-6 border-x-4 border-slate-400 rounded-t-full shadow-inner relative">
+                            <!-- Bulón del pistón -->
+                            <div class="absolute top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-600 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controles -->
+                <div class="mt-12 flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
+                    <button onclick="prevPhase()" class="p-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors" aria-label="Fase anterior">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    
+                    <button id="btn-play" onclick="toggleAutoPlay()" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-md transition-all flex items-center gap-2 min-w-[160px] justify-center">
+                        <svg id="icon-play" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                        <span id="text-play">Reproducir</span>
+                    </button>
+                    
+                    <button onclick="nextPhase()" class="p-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors" aria-label="Siguiente fase">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECCIÓN DERECHA: EXPLICACIÓN Y FASES -->
+            <div class="lg:w-1/2 p-8 lg:p-10 flex flex-col">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Fases del Ciclo</h2>
                 
-                <path d="M 65,160 L 135,160 L 145,185 L 135,210 L 65,210 L 55,185 Z" fill="#78909c" stroke="#546e7a" stroke-width="2"/>
-                <rect x="70" y="170" width="60" height="30" fill="#607d8b" rx="2"/>
-                
-                <rect x="73" y="210" width="54" height="8" fill="#cfd8dc" stroke="#90a4ae" stroke-width="1"/>
+                <!-- Lista de Fases (se llenará dinámicamente) -->
+                <div class="space-y-3 flex-grow" id="phases-list">
+                    <!-- Los botones indicadores de fase se inyectan aquí vía JS -->
+                </div>
 
-                <rect x="75" y="218" width="50" height="90" fill="#546e7a" stroke="#37474f" stroke-width="2"/>
-                <line x1="72" y1="230" x2="128" y2="230" stroke="#37474f" stroke-width="4" stroke-linecap="round"/>
-                <line x1="72" y1="245" x2="128" y2="245" stroke="#37474f" stroke-width="4" stroke-linecap="round"/>
-                <line x1="72" y1="260" x2="128" y2="260" stroke="#37474f" stroke-width="4" stroke-linecap="round"/>
-                <line x1="72" y1="275" x2="128" y2="275" stroke="#37474f" stroke-width="4" stroke-linecap="round"/>
-                <line x1="72" y1="290" x2="128" y2="290" stroke="#37474f" stroke-width="4" stroke-linecap="round"/>
-
-                <rect x="94" y="308" width="12" height="25" fill="#ffb347" stroke="#f57c00" stroke-width="1"/>
-                
-                <path d="M 120,308 L 120,345 L 92,345" fill="none" stroke="#37474f" stroke-width="5" stroke-linecap="square"/>
-            </svg>
-
-            <div class="hotspot" style="top: 10%; left: 50%;" data-id="terminal"></div>
-            <div class="hotspot" style="top: 27%; left: 50%;" data-id="aislador"></div>
-            <div class="hotspot" style="top: 49%; left: 50%;" data-id="cuerpo"></div>
-            <div class="hotspot" style="top: 70%; left: 50%;" data-id="rosca"></div>
-            <div class="hotspot" style="top: 89%; left: 50%;" data-id="electrodos"></div>
-
+                <!-- Tarjeta de Descripción Detallada -->
+                <div id="desc-card" class="mt-8 p-6 bg-blue-50 rounded-2xl border border-blue-200 shadow-sm transition-colors duration-500">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span id="current-badge" class="px-3 py-1 bg-blue-600 text-white text-sm font-bold rounded-full">Fase 1</span>
+                        <h3 id="current-title" class="font-bold text-xl text-slate-800">Admisión</h3>
+                    </div>
+                    <p id="current-desc" class="text-slate-700 leading-relaxed text-lg">
+                        Cargando descripción...
+                    </p>
+                </div>
+            </div>
         </div>
-        
-        <p class="instruccion">👆 Toca los puntos rojos para estudiar cada pieza y su mantenimiento técnico.</p>
-    </div>
+    </main>
 
-    <div class="modal-overlay" id="modal">
-        <div class="modal-box">
-            <button class="btn-cerrar" id="btn-cerrar">&times;</button>
-            <h3 class="modal-titulo" id="modal-titulo">Título</h3>
-            <p class="modal-texto" id="modal-texto">Descripción.</p>
-        </div>
-    </div>
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-center py-6 text-sm mt-auto z-10">
+        <p>Simulador de Motor de 4 Tiempos • Diseñado para ser un archivo único fácil de subir a GitHub Pages.</p>
+    </footer>
 
     <script>
-        // BASE DE DATOS TÉCNICA EN ESPAÑOL
-        const infoBujia = {
-            "terminal": {
-                titulo: "Terminal Superior",
-                texto: "Es la pieza metálica donde conecta el cable de alta tensión procedente de la bobina. Debe asegurar un contacto firme y limpio. Si presenta sulfatación o juego, la corriente perderá fuerza provocando fallas de encendido."
+        /**
+         * Definición de los 4 Tiempos del Motor (Ciclo Otto)
+         * Cada objeto contiene los parámetros visuales (posiciones, colores) y textuales.
+         */
+        const enginePhases = [
+            {
+                id: 0,
+                name: "Admisión",
+                badge: "Fase 1",
+                desc: "El pistón desciende desde el Punto Muerto Superior (PMS) al Inferior (PMI). La válvula de admisión se abre, creando un vacío que aspira una mezcla fresca de aire y combustible hacia el interior del cilindro.",
+                pistonY: "0px",        // Pistón abajo
+                valveInY: "16px",      // Válvula Admisión abierta (baja)
+                valveOutY: "0px",      // Válvula Escape cerrada
+                gasColor: "#bae6fd",   // Azul claro (mezcla fría entrando)
+                spark: false,
+                theme: "blue",         // Para los colores de la UI
+                labelInActive: true,
+                labelOutActive: false
             },
-            "aislador": {
-                titulo: "Aislador Cerámico y Costillas",
-                texto: "Fabricado con cerámica de alta pureza. Soporta miles de voltios evitando que la corriente busque masa antes de llegar a la punta. Las 'costillas' exteriores alargan la superficie física para impedir que la chispa salte por fuera de la bujía ante condiciones de humedad."
+            {
+                id: 1,
+                name: "Compresión",
+                badge: "Fase 2",
+                desc: "Ambas válvulas se cierran herméticamente. El pistón sube de nuevo hacia el PMS, comprimiendo fuertemente la mezcla. Esto eleva dramáticamente la presión y la temperatura de los gases, preparándolos para la ignición.",
+                pistonY: "170px",      // Pistón arriba
+                valveInY: "0px",       // Cerrada
+                valveOutY: "0px",      // Cerrada
+                gasColor: "#94a3b8",   // Gris oscuro (mezcla comprimida)
+                spark: false,
+                theme: "slate",
+                labelInActive: false,
+                labelOutActive: false
             },
-            "cuerpo": {
-                titulo: "Cuerpo Metálico (Hexágono)",
-                texto: "Estructura de acero donde se acopla la llave saca-bujías para el torque de apriete. Sirve como blindaje mecánico, asegura la conexión de masa al bloque del motor y es clave para evacuar el calor de la cámara de combustión hacia la tapa de cilindros."
+            {
+                id: 2,
+                name: "Combustión / Expansión",
+                badge: "Fase 3",
+                desc: "¡PUM! La bujía emite una chispa eléctrica que enciende la mezcla comprimida. La violenta explosión genera gases que se expanden rápidamente, empujando el pistón hacia abajo con gran fuerza. Este es el único tiempo que genera trabajo útil.",
+                pistonY: "0px",        // Pistón empujado hacia abajo
+                valveInY: "0px",       // Cerrada
+                valveOutY: "0px",      // Cerrada
+                gasColor: "#f87171",   // Rojo (fuego/explosión)
+                spark: true,
+                theme: "red",
+                labelInActive: false,
+                labelOutActive: false
             },
-            "rosca": {
-                titulo: "Rosca y Asiento de Estanqueidad",
-                texto: "Su diámetro y longitud deben coincidir exactamente con las especificaciones de la tapa de cilindros. Aloja la arandela de deformación que garantiza que no se pierda compresión en el cilindro. Si se barren los hilos por un exceso de torque, la reparación requiere un inserto."
-            },
-            "electrodos": {
-                titulo: "Electrodo Central, de Masa y Luz de Bujía",
-                texto: "El electrodo central (generalmente con núcleo de cobre, platino o iridio) recibe la alta tensión. El electrodo de masa cierra el circuito. La distancia libre entre ambos se denomina 'Luz de bujía'. Debe medirse con una sonda; si está muy abierta o cerrada, el motor perderá rendimiento y consumirá más combustible."
+            {
+                id: 3,
+                name: "Escape",
+                badge: "Fase 4",
+                desc: "La válvula de escape se abre. El pistón vuelve a subir empujado por la inercia (o por otros cilindros), barriendo y expulsando los gases quemados hacia el sistema de escape para dejar el cilindro limpio para un nuevo ciclo.",
+                pistonY: "170px",      // Pistón arriba empujando gases
+                valveInY: "0px",       // Cerrada
+                valveOutY: "16px",     // Válvula Escape abierta (baja)
+                gasColor: "#d1d5db",   // Gris claro (humo saliendo)
+                spark: false,
+                theme: "gray",
+                labelInActive: false,
+                labelOutActive: true
             }
-        };
+        ];
 
-        // GESTIÓN DEL MODAL
-        const hotspots = document.querySelectorAll('.hotspot');
-        const modal = document.getElementById('modal');
-        const btnCerrar = document.getElementById('btn-cerrar');
-        const modalTitulo = document.getElementById('modal-titulo');
-        const modalTexto = document.getElementById('modal-texto');
+        let currentPhaseIndex = 0;
+        let isPlaying = false;
+        let playInterval;
+        const PLAY_SPEED_MS = 2000; // 2 segundos por fase para que se lea bien
 
-        hotspots.forEach(punto => {
-            punto.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const datos = infoBujia[id];
+        // Referencias a los elementos del motor
+        const elPiston = document.getElementById('piston');
+        const elValveIn = document.getElementById('valve-intake');
+        const elValveOut = document.getElementById('valve-exhaust');
+        const elGasColor = document.getElementById('cylinder-gas');
+        const elSparkPlug = document.getElementById('spark-plug');
+        
+        // Referencias a las etiquetas y textos
+        const elLabelIn = document.getElementById('label-intake');
+        const elLabelOut = document.getElementById('label-exhaust');
+        
+        const elCurrentBadge = document.getElementById('current-badge');
+        const elCurrentTitle = document.getElementById('current-title');
+        const elCurrentDesc = document.getElementById('current-desc');
+        const elDescCard = document.getElementById('desc-card');
+        
+        const phasesListContainer = document.getElementById('phases-list');
+        const btnPlay = document.getElementById('btn-play');
+        const textPlay = document.getElementById('text-play');
+        const iconPlay = document.getElementById('icon-play');
+
+        // Inicializar la Interfaz de Usuario
+        function initUI() {
+            // Crear la lista lateral de botones de fase
+            enginePhases.forEach((phase, index) => {
+                const stepBtn = document.createElement('button');
+                stepBtn.id = `step-indicator-${index}`;
+                stepBtn.className = `w-full text-left p-4 rounded-xl cursor-pointer transition-all duration-300 border-2 flex items-center gap-4 group`;
+                stepBtn.onclick = () => setPhase(index);
                 
-                if(datos) {
-                    modalTitulo.textContent = datos.titulo;
-                    modalTexto.textContent = datos.texto;
-                    modal.classList.add('activo');
+                stepBtn.innerHTML = `
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-colors indicator-num">
+                        ${index + 1}
+                    </div>
+                    <span class="font-bold text-lg text-slate-700 group-hover:text-slate-900 transition-colors indicator-text">${phase.name}</span>
+                `;
+                phasesListContainer.appendChild(stepBtn);
+            });
+            
+            // Renderizar la fase inicial (0)
+            updateEngineView();
+        }
+
+        // Cambiar a una fase específica al hacer clic
+        function setPhase(index) {
+            currentPhaseIndex = index;
+            // Si el usuario hace clic manualmente, pausamos la reproducción automática
+            if(isPlaying) toggleAutoPlay(); 
+            updateEngineView();
+        }
+
+        // Avanzar a la siguiente fase
+        function nextPhase() {
+            currentPhaseIndex = (currentPhaseIndex + 1) % enginePhases.length;
+            updateEngineView();
+        }
+
+        // Retroceder a la fase anterior
+        function prevPhase() {
+            currentPhaseIndex = (currentPhaseIndex - 1 + enginePhases.length) % enginePhases.length;
+            updateEngineView();
+        }
+
+        // Actualizar TODOS los elementos visuales basados en la fase actual
+        function updateEngineView() {
+            const phase = enginePhases[currentPhaseIndex];
+
+            // 1. Mover partes del motor (CSS Transforms)
+            elPiston.style.transform = `translateY(-${phase.pistonY})`;
+            elValveIn.style.transform = `translateY(${phase.valveInY})`;
+            elValveOut.style.transform = `translateY(${phase.valveOutY})`;
+            
+            // 2. Cambiar color de los gases
+            elGasColor.style.backgroundColor = phase.gasColor;
+            
+            // 3. Activar/Desactivar la chispa
+            if (phase.spark) {
+                // Pequeño retraso para que la chispa ocurra cuando el pistón está arriba
+                setTimeout(() => { elSparkPlug.classList.add('spark-active'); }, 100);
+            } else {
+                elSparkPlug.classList.remove('spark-active');
+            }
+
+            // 4. Iluminar etiquetas de entrada/salida
+            if (phase.labelInActive) {
+                elLabelIn.classList.remove('text-slate-400');
+                elLabelIn.classList.add('text-blue-600');
+            } else {
+                elLabelIn.classList.add('text-slate-400');
+                elLabelIn.classList.remove('text-blue-600');
+            }
+
+            if (phase.labelOutActive) {
+                elLabelOut.classList.remove('text-slate-400');
+                elLabelOut.classList.add('text-slate-800');
+            } else {
+                elLabelOut.classList.add('text-slate-400');
+                elLabelOut.classList.remove('text-slate-800');
+            }
+
+            // 5. Actualizar Tarjeta de Descripción
+            elCurrentBadge.textContent = phase.badge;
+            elCurrentTitle.textContent = phase.name;
+            elCurrentDesc.textContent = phase.desc;
+
+            // Cambiar colores de la tarjeta de descripción según el tema de la fase
+            elDescCard.className = `mt-8 p-6 rounded-2xl border shadow-sm transition-colors duration-500 bg-${phase.theme}-50 border-${phase.theme}-200`;
+            elCurrentBadge.className = `px-3 py-1 text-white text-sm font-bold rounded-full bg-${phase.theme}-600`;
+            
+            // Corrige los temas específicos de Tailwind que no mapean directo
+            if(phase.theme === 'slate') {
+                 elCurrentBadge.classList.replace('bg-slate-600', 'bg-slate-700');
+            }
+            if(phase.theme === 'gray') {
+                 elCurrentBadge.classList.replace('bg-gray-600', 'bg-gray-500');
+            }
+
+            // 6. Actualizar Menú Lateral (Resaltar el activo)
+            enginePhases.forEach((p, index) => {
+                const btn = document.getElementById(`step-indicator-${index}`);
+                const num = btn.querySelector('.indicator-num');
+                
+                // Reiniciar estilos
+                btn.classList.remove('border-blue-500', 'bg-blue-50', 'border-slate-500', 'bg-slate-50', 'border-red-500', 'bg-red-50', 'border-gray-400', 'bg-gray-100');
+                btn.classList.add('border-transparent', 'bg-white', 'hover:bg-slate-50');
+                
+                num.classList.remove('bg-blue-600', 'text-white', 'bg-slate-700', 'bg-red-500', 'bg-gray-500');
+                num.classList.add('bg-slate-200', 'text-slate-600');
+
+                // Aplicar estilo activo
+                if (index === currentPhaseIndex) {
+                    btn.classList.remove('border-transparent', 'bg-white', 'hover:bg-slate-50');
+                    num.classList.remove('bg-slate-200', 'text-slate-600');
+                    num.classList.add('text-white');
+
+                    // Colores temáticos para el menú
+                    if(p.theme === 'blue') { btn.classList.add('border-blue-500', 'bg-blue-50'); num.classList.add('bg-blue-600'); }
+                    if(p.theme === 'slate') { btn.classList.add('border-slate-500', 'bg-slate-50'); num.classList.add('bg-slate-700'); }
+                    if(p.theme === 'red') { btn.classList.add('border-red-500', 'bg-red-50'); num.classList.add('bg-red-500'); }
+                    if(p.theme === 'gray') { btn.classList.add('border-gray-400', 'bg-gray-100'); num.classList.add('bg-gray-500'); }
                 }
             });
-        });
+        }
 
-        btnCerrar.addEventListener('click', () => modal.classList.remove('activo'));
-        modal.addEventListener('click', function(e) {
-            if(e.target === this) {
-                modal.classList.remove('activo');
+        // Control de la reproducción automática
+        function toggleAutoPlay() {
+            if (isPlaying) {
+                // Pausar
+                clearInterval(playInterval);
+                textPlay.textContent = "Reproducir";
+                btnPlay.classList.replace('bg-amber-500', 'bg-blue-600');
+                btnPlay.classList.replace('hover:bg-amber-600', 'hover:bg-blue-700');
+                // Cambiar icono a Play
+                iconPlay.innerHTML = '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>';
+                isPlaying = false;
+            } else {
+                // Reproducir
+                nextPhase(); // Avanza inmediatamente
+                playInterval = setInterval(() => {
+                    nextPhase();
+                }, PLAY_SPEED_MS);
+                
+                textPlay.textContent = "Pausar";
+                btnPlay.classList.replace('bg-blue-600', 'bg-amber-500');
+                btnPlay.classList.replace('hover:bg-blue-700', 'hover:bg-amber-600');
+                // Cambiar icono a Pause
+                iconPlay.innerHTML = '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>';
+                isPlaying = true;
             }
-        });
+        }
+
+        // Ejecutar inicialización cuando el DOM esté listo
+        window.onload = initUI;
     </script>
 </body>
 </html>
