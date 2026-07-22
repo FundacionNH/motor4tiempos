@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Despiece de Bujía - Fundación NH</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .app-container {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 4800px;
+            width: 450px;
+        }
+        h2 {
+            text-align: center;
+            color: #4da6ff;
+            margin: 0 0 5px 0;
+            font-size: 1.3rem;
+        }
+        .fundacion-tag {
+            text-align: center;
+            color: #888;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        /* Contenedor relativo para posicionar los Hotspots */
+        .imagen-contenedor {
+            position: relative;
+            width: 100%;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Estilos de los Hotspots (Puntos interactivos) */
+        .hotspot {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background-color: #ff5252;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+            z-index: 10;
+        }
+
+        /* Animación de latido */
+        .hotspot::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 50%;
+            background-color: transparent;
+            border: 2px solid #ff5252;
+            animation: latido 1.6s infinite ease-out;
+        }
+
+        @keyframes latido {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+
+        /* Ventana Emergente (Modal) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+        .modal-overlay.activo {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background-color: #2a2a2a;
+            width: 100%;
+            max-width: 380px;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            border-top: 5px solid #4da6ff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .modal-overlay.activo .modal-box {
+            transform: translateY(0);
+        }
+
+        .btn-cerrar {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 1.6rem;
+            cursor: pointer;
+        }
+        .modal-titulo {
+            color: #4da6ff;
+            margin-top: 0;
+            font-size: 1.15rem;
+            padding-right: 25px;
+        }
+        .modal-texto {
+            color: #ddd;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+        .instruccion {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <h2>Componentes de una Bujía</h2>
+        <div class="fundacion-tag">FUNDACIÓN NH</div>
+
+        <div class="imagen-contenedor">
+            
+            <svg viewBox="0 0 200 380">
+                <rect x="90" y="20" width="20" height="25" rx="4" fill="#b0bec5" stroke="#78909c" stroke-width="2"/>
+                <circle cx="100" cy="25" r="6" fill="#90a4ae"/>
+                
+                <rect x="80" y="45" width="40" height="115" rx="5" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="2"/>
+                <rect x="75" y="65" width="50" height="10" rx="3" fill="#e0e0e0"/>
+                <rect x="75" y="85" width="50" height="10" rx="3" fill="#e0e0e0"/>
+                <rect x="75" y="105" width="50" height="10" rx="3" fill="#e0e0e0"/>
+                
+                <path d="M 65,160 L 135,160 L 145,185 L 135,210 L 65,210 L 55,185 Z" fill="#78909c" stroke="#546e7a" stroke-width="2"/>
+                <rect x="70" y="170" width="60" height="30" fill="#607d8b" rx="2"/>
+                
+                <rect x="73" y="210" width="54" height="8" fill="#cfd8dc" stroke="#90a4ae" stroke-width="1"/>
+
+                <rect x="75" y="218" width="50" height="90" fill="#546e7a" stroke="#37474f" stroke-width="2"/>
+                <line x1="72" y1="230" x2="128" y2="230" stroke="#37474f" stroke-width="4" stroke-linecap="round"/>
+                <line x1="72" y1="245" x2="128" y2="245" stroke="#37474f" stroke-width="4" stroke-linecap="round"/>
+                <line x1="72" y1="260" x2="128" y2="260" stroke="#37474f" stroke-width="4" stroke-linecap="round"/>
+                <line x1="72" y1="275" x2="128" y2="275" stroke="#37474f" stroke-width="4" stroke-linecap="round"/>
+                <line x1="72" y1="290" x2="128" y2="290" stroke="#37474f" stroke-width="4" stroke-linecap="round"/>
+
+                <rect x="94" y="308" width="12" height="25" fill="#ffb347" stroke="#f57c00" stroke-width="1"/>
+                
+                <path d="M 120,308 L 120,345 L 92,345" fill="none" stroke="#37474f" stroke-width="5" stroke-linecap="square"/>
+            </svg>
+
+            <div class="hotspot" style="top: 10%; left: 50%;" data-id="terminal"></div>
+            <div class="hotspot" style="top: 27%; left: 50%;" data-id="aislador"></div>
+            <div class="hotspot" style="top: 49%; left: 50%;" data-id="cuerpo"></div>
+            <div class="hotspot" style="top: 70%; left: 50%;" data-id="rosca"></div>
+            <div class="hotspot" style="top: 89%; left: 50%;" data-id="electrodos"></div>
+
+        </div>
+        
+        <p class="instruccion">👆 Toca los puntos rojos para estudiar cada pieza y su mantenimiento técnico.</p>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <button class="btn-cerrar" id="btn-cerrar">&times;</button>
+            <h3 class="modal-titulo" id="modal-titulo">Título</h3>
+            <p class="modal-texto" id="modal-texto">Descripción.</p>
+        </div>
+    </div>
+
+    <script>
+        // BASE DE DATOS TÉCNICA EN ESPAÑOL
+        const infoBujia = {
+            "terminal": {
+                titulo: "Terminal Superior",
+                texto: "Es la pieza metálica donde conecta el cable de alta tensión procedente de la bobina. Debe asegurar un contacto firme y limpio. Si presenta sulfatación o juego, la corriente perderá fuerza provocando fallas de encendido."
+            },
+            "aislador": {
+                titulo: "Aislador Cerámico y Costillas",
+                texto: "Fabricado con cerámica de alta pureza. Soporta miles de voltios evitando que la corriente busque masa antes de llegar a la punta. Las 'costillas' exteriores alargan la superficie física para impedir que la chispa salte por fuera de la bujía ante condiciones de humedad."
+            },
+            "cuerpo": {
+                titulo: "Cuerpo Metálico (Hexágono)",
+                texto: "Estructura de acero donde se acopla la llave saca-bujías para el torque de apriete. Sirve como blindaje mecánico, asegura la conexión de masa al bloque del motor y es clave para evacuar el calor de la cámara de combustión hacia la tapa de cilindros."
+            },
+            "rosca": {
+                titulo: "Rosca y Asiento de Estanqueidad",
+                texto: "Su diámetro y longitud deben coincidir exactamente con las especificaciones de la tapa de cilindros. Aloja la arandela de deformación que garantiza que no se pierda compresión en el cilindro. Si se barren los hilos por un exceso de torque, la reparación requiere un inserto."
+            },
+            "electrodos": {
+                titulo: "Electrodo Central, de Masa y Luz de Bujía",
+                texto: "El electrodo central (generalmente con núcleo de cobre, platino o iridio) recibe la alta tensión. El electrodo de masa cierra el circuito. La distancia libre entre ambos se denomina 'Luz de bujía'. Debe medirse con una sonda; si está muy abierta o cerrada, el motor perderá rendimiento y consumirá más combustible."
+            }
+        };
+
+        // GESTIÓN DEL MODAL
+        const hotspots = document.querySelectorAll('.hotspot');
+        const modal = document.getElementById('modal');
+        const btnCerrar = document.getElementById('btn-cerrar');
+        const modalTitulo = document.getElementById('modal-titulo');
+        const modalTexto = document.getElementById('modal-texto');
+
+        hotspots.forEach(punto => {
+            punto.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const datos = infoBujia[id];
+                
+                if(datos) {
+                    modalTitulo.textContent = datos.titulo;
+                    modalTexto.textContent = datos.texto;
+                    modal.classList.add('activo');
+                }
+            });
+        });
+
+        btnCerrar.addEventListener('click', () => modal.classList.remove('activo'));
+        modal.addEventListener('click', function(e) {
+            if(e.target === this) {
+                modal.classList.remove('activo');
+            }
+        });
+    </script>
+</body>
+</html>
